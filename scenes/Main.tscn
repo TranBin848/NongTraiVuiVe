@@ -1,6 +1,24 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqtie8fdoeyys"]
+[gd_scene load_steps=3 format=3 uid="uid://dqtie8fdoeyys"]
 
 [ext_resource type="Script" uid="uid://cusvk36cpn5ub" path="res://scenes/main.gd" id="1_elqb8"]
+[ext_resource type="Texture2D" uid="uid://ct6aq63y2y2sm" path="res://icon.svg" id="2_rvslj"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_elqb8")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ToggleBtn" type="Button" parent="CanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -24.0
+offset_right = 24.0
+offset_bottom = 48.0
+grow_horizontal = 2
+scale = Vector2(0.7, 0.7)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ToggleBtn"]
+position = Vector2(24, 24.2)
+scale = Vector2(0.375001, 0.371875)
+texture = ExtResource("2_rvslj")
