@@ -1,49 +1,55 @@
 extends CharacterBody2D
 
-@export var speed = 100.0
+@export var speed = 80.0
 var target_x = 0.0
 var floor_y = 0.0
+var farmer_height = 0.0 
+
+@onready var anim = $AnimatedSprite2D
+@onready var col_shape: CollisionShape2D = $CollisionShape2D
 
 func _ready():
-	# 1. Tính toán vị trí mặt đất (cạnh trên của Taskbar)
-	var usable_rect = DisplayServer.screen_get_usable_rect()
+	await get_tree().process_frame
 	
-	# Lấy chiều cao của Sprite để nông dân không bị lún chân
-	# Giả sử bạn dùng Sprite2D, chúng ta lấy size của texture
-	var sprite_height = $Sprite2D.texture.get_size().y * $Sprite2D.scale.y
+	_update_floor_position()
 	
-	# Tọa độ Y = (Đáy vùng sử dụng được) - (Một nửa hoặc cả chiều cao sprite tùy theo Offset)
-	# Nếu Sprite của bạn có Centered = true (mặc định), hãy trừ đi một nửa:
-	floor_y = (usable_rect.position.y + usable_rect.size.y) - (sprite_height / 2)
-	
-	# Nếu bạn muốn nông dân đi "trên" Taskbar một chút cho đẹp, hãy trừ thêm 5-10 pixel
-	floor_y -= 2 
-
-	# Đặt vị trí ban đầu
-	position.y = floor_y
-	position.x = randf_range(50, DisplayServer.screen_get_size().x - 50)
-	
+	# Đặt vị trí X ngẫu nhiên trong màn hình
+	global_position.x = randf_range(50, get_window().size.x - 50)
 	_choose_new_target()
 
-func _physics_process(delta):
-	# Tính toán hướng di chuyển sang trái hoặc phải
-	var direction = sign(target_x - position.x)
+func _update_floor_position():
+	var current_window_h = get_window().size.y
 	
+	farmer_height = col_shape.shape.size.y
+	
+	var actual_col_height = farmer_height * col_shape.scale.y * self.scale.y
+	
+	floor_y = current_window_h - (actual_col_height / 2)
+	
+	floor_y -= 2
+	
+	global_position.y = floor_y
+	
+	print("Chiều cao vùng va chạm: ", actual_col_height)
+	print("Sàn tính theo Collision: ", floor_y)
+
+func _physics_process(delta):
 	if abs(position.x - target_x) > 5:
+		var direction = sign(target_x - position.x)
 		velocity.x = direction * speed
-		# Quay mặt Sprite sang hướng đang đi
-		if direction != 0:
-			$Sprite2D.flip_h = direction < 0
+		
+		anim.play("walk")
+		anim.flip_h = (direction < 0)
 	else:
 		velocity.x = 0
-		# Nếu đã đến đích, đợi một chút rồi đi tiếp
-		if randf() < 0.01: # Tỉ lệ nhỏ để bắt đầu đi tiếp mỗi frame
+		anim.play("idle")
+		
+		if randf() < 0.005:
 			_choose_new_target()
 			
 	move_and_slide()
-	# Ép nông dân luôn dính chặt vào mặt Taskbar (đề phòng va chạm làm lệch)
+	# Ép Y luôn bằng sàn của cửa sổ game
 	position.y = floor_y
 
 func _choose_new_target():
-	var screen_width = DisplayServer.screen_get_size().x
-	target_x = randf_range(50, screen_width - 50)
+	target_x = randf_range(100, get_window().size.x - 100)
