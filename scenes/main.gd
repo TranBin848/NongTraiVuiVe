@@ -32,8 +32,12 @@ func _ready():
 
 func _input(event: InputEvent) -> void:
 	# Press B to test spawn building
-	if event is InputEventKey and event.pressed and event.keycode == KEY_B:
-		_test_spawn_building()
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_B:
+			_test_spawn_building()
+		# Press S to test open Shop Window
+		elif event.keycode == KEY_S:
+			WindowManager.open_shop()
 
 
 func _test_spawn_building() -> void:
