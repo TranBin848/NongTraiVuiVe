@@ -1,0 +1,53 @@
+[gd_scene load_steps=9 format=3 uid="uid://curlrnjtc0j81"]
+
+[ext_resource type="Script" uid="uid://dsw6ajugjbf3k" path="res://scripts/Building/Behaviour/BuildingBehaviour.gd" id="1_building"]
+[ext_resource type="Script" uid="uid://r56s1v4lewx0" path="res://scripts/StateMachine/BaseStateMachine.gd" id="2_statemachine"]
+[ext_resource type="Script" uid="uid://dq3njsei6l87q" path="res://scripts/StateMachine/BuildingStates/BuildingConstructState.gd" id="3_constructstate"]
+[ext_resource type="Script" uid="uid://bpt45xv7mwkdv" path="res://scripts/StateMachine/BuildingStates/BuildingIdleState.gd" id="4_idlestate"]
+[ext_resource type="Script" uid="uid://ddcoxgusq6we0" path="res://scripts/Building/Component/ConstructComponent.gd" id="5_construct"]
+[ext_resource type="Texture2D" uid="uid://cyhd3407byklq" path="res://assets/Tiny Swords (Free Pack)/Buildings/Blue Buildings/House1.png" id="6_texture"]
+[ext_resource type="Resource" uid="uid://dh1icvbsaomny" path="res://resources/Configs/BuildingConfigs/House1ConstructConfig.tres" id="7_constructconfig"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_click"]
+size = Vector2(48, 48)
+
+[node name="House1Building" type="Node2D" node_paths=PackedStringArray("building_state_machine", "construct_component", "sprite", "click_area", "collision_shape", "progress_bar")]
+script = ExtResource("1_building")
+building_state_machine = NodePath("BuildingStateMachine")
+construct_component = NodePath("ConstructComponent")
+sprite = NodePath("Sprite2D")
+click_area = NodePath("ClickArea")
+collision_shape = NodePath("ClickArea/CollisionShape2D")
+progress_bar = NodePath("ProgressBar")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("6_texture")
+
+[node name="ClickArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea"]
+shape = SubResource("RectangleShape2D_click")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+visible = false
+offset_left = -30.0
+offset_top = -45.0
+offset_right = 30.0
+offset_bottom = -35.0
+show_percentage = false
+
+[node name="BuildingStateMachine" type="Node2D" parent="."]
+script = ExtResource("2_statemachine")
+
+[node name="BuildingConstructState" type="Node2D" parent="BuildingStateMachine"]
+script = ExtResource("3_constructstate")
+building_behaviour = NodePath("../..")
+
+[node name="BuildingIdleState" type="Node2D" parent="BuildingStateMachine"]
+script = ExtResource("4_idlestate")
+building_behaviour = NodePath("../..")
+
+[node name="ConstructComponent" type="Node2D" parent="."]
+script = ExtResource("5_construct")
+construct_config = ExtResource("7_constructconfig")

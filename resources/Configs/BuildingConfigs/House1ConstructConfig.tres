@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ConstructConfig" load_steps=2 format=3 uid="uid://c1house1constructconfig"]
+
+[ext_resource type="Script" path="res://scripts/Building/Config/ConstructConfig.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+max_construct_health = 100.0
