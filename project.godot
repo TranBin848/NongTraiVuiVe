@@ -21,6 +21,7 @@ GlobalSignal="*res://scripts/Manager/GlobalSignal.gd"
 ConfigManager="*res://scripts/Manager/ConfigManager.gd"
 BuildingManager="*res://scripts/Manager/BuildingManager.gd"
 WindowManager="*res://scripts/Manager/WindowManager.gd"
+InventoryManager="*res://scripts/Manager/InventoryManager.gd"
 
 [display]
 

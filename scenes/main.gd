@@ -38,6 +38,9 @@ func _input(event: InputEvent) -> void:
 		# Press S to test open Shop Window
 		elif event.keycode == KEY_S:
 			WindowManager.open_shop()
+		# Bấm phím A để thử nghiệm vứt thêm đồ vào túi
+		elif event.keycode == KEY_A:
+			InventoryManager.add_item("hat_giong", 3)
 
 
 func _test_spawn_building() -> void:
