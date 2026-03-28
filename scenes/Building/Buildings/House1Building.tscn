@@ -21,7 +21,7 @@ collision_shape = NodePath("ClickArea/CollisionShape2D")
 progress_bar = NodePath("ProgressBar")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_texture")
 
 [node name="ClickArea" type="Area2D" parent="."]

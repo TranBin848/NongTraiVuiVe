@@ -52,10 +52,14 @@ func _draw() -> void:
 		var center_x = get_slot_position(slot_idx, b_size)
 		
 		if b_tex:
-			# Bản in 3D: Lắp nhà đúng vào đệm theo chiều ngang và bệ xuống sàn h.
-			var tw = b_tex.get_width()
-			var th = b_tex.get_height()
-			var dest_rect = Rect2(center_x - tw/2.0, h - th, tw, th)
+			# Bản in 3D: Ép bóng mờ bóp/phóng to vừa xít với chiều rộng quy định của miếng đất!
+			var tex_w = b_tex.get_width()
+			var tex_h = b_tex.get_height()
+			
+			var fit_width = b_size * SLOT_SIZE 
+			var fit_height = tex_h * (fit_width / tex_w) # Co giãn theo tỷ lệ
+			
+			var dest_rect = Rect2(center_x - fit_width / 2.0, h - fit_height, fit_width, fit_height)
 			draw_texture_rect(b_tex, dest_rect, false, color)
 		else:
 			# Fallback lỡ như tòa nhà đéo có hình

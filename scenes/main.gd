@@ -6,6 +6,14 @@ var hidden_pos = Vector2i()
 var window_h = 200
 
 @onready var toggle_btn = $CanvasLayer/ToggleBtn
+@onready var camera: Camera2D = $Camera2D
+
+# === CAMERA SCROLL LOGIC ===
+var _dragging: bool = false
+var _last_mouse_pos: Vector2 = Vector2.ZERO
+var _target_pos: Vector2 = Vector2.ZERO
+var smoothing_speed: float = 8.0
+var drag_sensitivity: float = 1.0
 
 func _ready():
 	var screen_id = DisplayServer.window_get_current_screen()
@@ -29,8 +37,41 @@ func _ready():
 	# Đặt Pivot của nút vào giữa để xoay/lật cho đẹp
 	toggle_btn.pivot_offset = toggle_btn.size / 2
 
+	if camera:
+		_target_pos = camera.global_position
+
+func _process(delta: float) -> void:
+	if camera:
+		var t: float = clamp(smoothing_speed * delta, 0.0, 1.0)
+		camera.global_position = camera.global_position.lerp(_target_pos, t)
+
+func _clamp_position(pos: Vector2) -> Vector2:
+	var screen_w = get_viewport().get_visible_rect().size.x
+	# Max cuộn = Tổng chiều dài bãi đất trừ đi chiều dài cái màn hình
+	var max_x = GridManager.SLOT_COUNT * GridManager.SLOT_SIZE - screen_w
+	if max_x < 0:
+		max_x = 0
+		
+	var x = clamp(pos.x, 0.0, max_x)
+	return Vector2(x, pos.y)
 
 func _input(event: InputEvent) -> void:
+	# === CAMERA SCROLL EVENT ===
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			if event.pressed:
+				_dragging = true
+				_last_mouse_pos = event.position
+			else:
+				_dragging = false
+				_target_pos = _clamp_position(_target_pos)
+
+	elif event is InputEventMouseMotion and _dragging:
+		var delta_vec: Vector2 = (event.position - _last_mouse_pos) * -drag_sensitivity
+		_last_mouse_pos = event.position
+		_target_pos.x += delta_vec.x
+		_target_pos = _clamp_position(_target_pos)
+
 	# Press B to test spawn building
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_B:

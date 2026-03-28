@@ -25,3 +25,6 @@ scale = Vector2(0.375001, 0.371875)
 texture = ExtResource("2_rvslj")
 
 [node name="Farmer" parent="." instance=ExtResource("3_0bbpv")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
