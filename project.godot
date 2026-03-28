@@ -22,6 +22,7 @@ ConfigManager="*res://scripts/Manager/ConfigManager.gd"
 BuildingManager="*res://scripts/Manager/BuildingManager.gd"
 WindowManager="*res://scripts/Manager/WindowManager.gd"
 InventoryManager="*res://scripts/Manager/InventoryManager.gd"
+GridManager="*res://scripts/Manager/GridManager.gd"
 
 [display]
 

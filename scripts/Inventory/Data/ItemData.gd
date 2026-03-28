@@ -10,6 +10,12 @@ func _init(_id: String = "", _amount: int = 1) -> void:
 	amount = _amount
 
 func get_texture() -> Texture2D:
+	if item_id.begins_with("building_"):
+		var b_id = item_id.replace("building_", "").to_int()
+		var config = ConfigManager.get_building_config(b_id as EnumType.Building)
+		if config and config.get("texture"):
+			return config.texture
+			
 	# Tạm dùng icon mặc định của Godot. Sau này bạn chỉ cần check id để load file ảnh tương ứng.
 	return load("res://icon.svg") 
 

@@ -38,9 +38,47 @@ func _input(event: InputEvent) -> void:
 		# Press S to test open Shop Window
 		elif event.keycode == KEY_S:
 			WindowManager.open_shop()
-		# Bấm phím A để thử nghiệm vứt thêm đồ vào túi
+		# Bấm phím A để thử nghiệm vứt thêm Building vào túi
 		elif event.keycode == KEY_A:
-			InventoryManager.add_item("hat_giong", 3)
+			InventoryManager.add_item("building_1", 3)
+			InventoryManager.add_item("building_2", 2)
+
+	# Bắt sự kiện Click MOUSE TRÁI để thả Nhà (Building)
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var dragged = InventoryManager.dragged_item
+		if dragged != null and dragged.item_id.begins_with("building_"):
+			var b_type = dragged.item_id.replace("building_", "").to_int() as EnumType.Building
+			
+			# Lướt Config tìm chiều rộng lấn chiếm thực tế của tòa nhà (Building Size)
+			var config = ConfigManager.get_building_config(b_type)
+			var b_size = config.building_size if config != null else 1
+			var slot_idx: int = GridManager.get_slot_index(event.position.x)
+			
+			# Từ chối Xây Dựng nếu Ô (Slot) đó đã có nhà hoặc ngoài tầm bản đồ
+			if GridManager.is_slot_available(slot_idx, b_size):
+				
+				# Móc tọa độ chính giữa tim mảnh đất để thả
+				var spawn_x = GridManager.get_slot_position(slot_idx, b_size)
+				
+				# Gọi Công Nhân Xây 
+				var building = BuildingManager.spawn_building(b_type, spawn_x)
+				if building:
+					# Bàn giao Sổ Đổ: Khóa Chốt Vùng Đất này.
+					GridManager.claim_slot(slot_idx, b_size, building)
+					
+					var leftover = dragged.amount - 1
+					
+					# Reset Chuột
+					InventoryManager.dragged_item = null
+					Input.set_custom_mouse_cursor(null)
+					
+					# Gửi trả móng thừa
+					if leftover > 0:
+						InventoryManager.add_item(dragged.item_id, leftover)
+						
+					InventoryManager.inventory_updated.emit()
+					get_viewport().set_input_as_handled()
+
 
 
 func _test_spawn_building() -> void:

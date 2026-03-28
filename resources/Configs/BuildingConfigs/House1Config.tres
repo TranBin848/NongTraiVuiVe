@@ -11,5 +11,6 @@ building_id = 1
 prefab = ExtResource("2_prefab")
 name = "House 1"
 texture = ExtResource("3_texture")
+building_size = 3
 construct_config = ExtResource("4_constructconfig")
 floor_offset_y = 10.0
